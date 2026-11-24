@@ -133,8 +133,9 @@ body {
 #alert {
     min-height: 1.2em;
     max-width: var(--card-width);
-    font-size: clamp(0.82rem, 2.3vw, 1rem);
+    font-size: clamp(0.88rem, 2.7vw, 1rem);
     font-weight: 600;
+    line-height: 1.35;
     color: #c0392b;
     text-align: center;
     overflow-wrap: anywhere;
@@ -143,6 +144,14 @@ body {
 /* sem mensagem: não reserva espaço */
 #alert:empty {
     min-height: 0;
+}
+
+/* com mensagem: vira um aviso suave, no mesmo estilo dos cards */
+#alert:not(:empty) {
+    padding: 7px 16px;
+    border-radius: var(--radius-sm);
+    background-color: rgba(255, 255, 255, .75);
+    box-shadow: var(--shadow-soft);
 }
 
 /* ---------------- Card do clima ---------------- */
@@ -162,16 +171,78 @@ body {
 
 #weatherContainer.show {
     display: flex;
-    animation: fadeIn .35s ease both;
+    animation: popIn .46s cubic-bezier(.22, 1.15, .36, 1) both;
+    transform-origin: 50% 35%;
 }
 
-@keyframes fadeIn {
+/* entrada em pop: sobe um pouco, passa do tamanho e assenta */
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(.86) translateY(18px);
+    }
+
+    55% {
+        opacity: 1;
+        transform: scale(1.02) translateY(0);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* detalhes entram em cascata depois do card */
+#weatherContainer.show #weatherInfo > div {
+    animation: cardIn .42s ease both;
+}
+
+#weatherContainer.show #weatherInfo > div:nth-child(1) {
+    animation-delay: .14s;
+}
+
+#weatherContainer.show #weatherInfo > div:nth-child(2) {
+    animation-delay: .19s;
+}
+
+#weatherContainer.show #weatherInfo > div:nth-child(3) {
+    animation-delay: .24s;
+}
+
+#weatherContainer.show #weatherInfo > div:nth-child(4) {
+    animation-delay: .29s;
+}
+
+@keyframes cardIn {
     from {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(8px) scale(.97);
     }
 
     to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* erro: aparece suave, sem solavancos */
+#alert.is-error {
+    animation: alertIn .38s ease both;
+}
+
+@keyframes alertIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-6px) scale(.97);
+    }
+
+    70% {
+        opacity: 1;
+        transform: translateY(0) scale(1.01);
+    }
+
+    100% {
         opacity: 1;
         transform: none;
     }
@@ -350,6 +421,12 @@ body {
         padding: 6px 10px;
     }
 
+    #alert:not(:empty) {
+        padding: 4px 12px;
+        font-size: 0.76rem;
+        line-height: 1.25;
+    }
+
     #weatherContainer {
         gap: 8px;
         padding: 10px 14px;
@@ -394,7 +471,9 @@ body {
 
 /* Preferência por menos movimento */
 @media (prefers-reduced-motion: reduce) {
-    #weatherContainer.show {
+    #weatherContainer.show,
+    #weatherContainer.show #weatherInfo > div,
+    #alert.is-error {
         animation: none;
     }
 

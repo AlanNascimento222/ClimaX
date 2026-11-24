@@ -1,6 +1,7 @@
 const searchForm = document.querySelector('#searchForm')
 const cityInput = document.querySelector('#city_name')
 const weatherContainer = document.querySelector('#weatherContainer')
+const alertBox = document.querySelector('#alert')
 
 searchForm.addEventListener('submit', async (event) => {
     event.preventDefault()
@@ -19,7 +20,11 @@ searchForm.addEventListener('submit', async (event) => {
         const json = await results.json()
 
         if (json.cod != 200) {
-            return showAlert('Não foi possível concluir a ação.')
+            return showAlert(
+                json.cod == 404
+                    ? 'Cidade não encontrada.'
+                    : 'Não foi possível concluir a ação.'
+            )
         }
 
         showJsonInfos({
@@ -35,16 +40,22 @@ searchForm.addEventListener('submit', async (event) => {
         })
     } catch (error) {
         showAlert('Falha na conexão. Tente novamente.')
-    }
-})
+    }})
 
 function showAlert(msg) {
-    document.querySelector('#alert').textContent = msg
+    alertBox.textContent = msg
+    alertBox.classList.remove('is-error')
+
+    if (!msg) return
+
+    // força o navegador a reiniciar a animação mesmo com a mesma mensagem
+    void alertBox.offsetWidth
+    alertBox.classList.add('is-error')
 }
 
 function showJsonInfos(json) {
     showAlert('')
-    weatherContainer.classList.add('show')
+
     document.querySelector('#cityName').textContent = `${json.city}, ${json.country}`
     document.querySelector('#currentTemp').textContent = `${json.temp.toFixed(0)}°C`
     document.querySelector('#weatherDescription').textContent = `${json.description}`
@@ -53,6 +64,11 @@ function showJsonInfos(json) {
     document.querySelector('#windSpeedDesc').textContent = `${json.windSpeed.toFixed(0)}km/h`
     document.querySelector('#humidityDesc').textContent = `${json.humidity}%`
     document.querySelector('#weatherIcon').setAttribute('src', `https://openweathermap.org/img/wn/${json.weatherIcon}@2x.png`)
+
+    // reinicia a animação de entrada em toda busca concluída
+    weatherContainer.classList.remove('show')
+    void weatherContainer.offsetWidth
+    weatherContainer.classList.add('show')
 }
 
 // refazer com o Open Meteo
