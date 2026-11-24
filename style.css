@@ -1,159 +1,281 @@
+/* ==========================================================
+   ClimaX - estilos responsivos
+   Unidades fluidas (clamp/min) no lugar de vh fixo.
+   ========================================================== */
+
+:root {
+    --card-bg: #f6f6f6;
+    --surface: #ffffff;
+    --text: #272727;
+    --shadow: 1px 2px 5px #dadada;
+    --shadow-soft: 1px 1px 3px #dadada;
+    --radius: 20px;
+    --radius-sm: 14px;
+    --gap: clamp(10px, 2vh, 20px);
+    --pad: clamp(14px, 2.4vh, 24px);
+    --card-width: min(92vw, 480px);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    color: var(--text);
+    background: linear-gradient(180deg, #87fdff 0%, #fbffc9 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    min-height: 100dvh;
 }
 
 .container {
-    gap: 3vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background: linear-gradient(180deg, #87fdff 0%, #fbffc9 100%);
+    gap: clamp(12px, 2.5vh, 28px);
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: clamp(16px, 3vh, 32px) 16px;
 }
 
+/* ---------------- Busca ---------------- */
+
 #searchForm {
-    width: 55vh;
-    height: 8vh;
+    width: var(--card-width);
     display: flex;
-    justify-content: space-evenly;
     align-items: center;
-    background-color: #f6f6f6;
-    border-radius: 20px;
-    box-shadow: 1px 2px 5px #dadada;
+    gap: clamp(8px, 1.6vw, 14px);
+    padding: clamp(8px, 1.4vh, 14px) clamp(10px, 2vw, 18px);
+    background-color: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+#searchForm > i {
+    flex: 0 0 auto;
+    font-size: clamp(0.95rem, 2.6vw, 1.15rem);
+    color: var(--text);
 }
 
 #searchForm input {
-    height: 5vh;
-    width: 30vh;
-    border-radius: 20px;
-    text-align: center;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: clamp(38px, 5.5vh, 48px);
+    padding: 0 12px;
     border: none;
-    background-color: #ffffff;
-    font-family: 'Poppins', sans-serif;
-    box-shadow: 1px 1px 3px #dadada;
+    border-radius: var(--radius);
+    background-color: var(--surface);
+    font-family: inherit;
+    font-size: clamp(0.85rem, 2.4vw, 1rem);
+    color: var(--text);
+    text-align: center;
+    box-shadow: var(--shadow-soft);
+    -webkit-appearance: none;
+    appearance: none;
 }
 
-#searchForm input:focus-visible{
-    outline: none;
+#searchForm input::placeholder {
+    color: #9a9a9a;
+}
+
+#searchForm input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+#searchForm input:focus-visible {
+    outline: 2px solid #6571E0;
+    outline-offset: 2px;
 }
 
 #searchButton {
-    border-radius: 20px;
-    box-shadow: 1px 1px 3px #dadada;
-    height: 6vh;
-    width: 9vh;
-    background-color: #fff;
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: clamp(38px, 5.5vh, 48px);
+    width: clamp(48px, 12vw, 64px);
     border: none;
+    border-radius: var(--radius);
+    background-color: var(--surface);
+    color: var(--text);
+    font-size: clamp(0.9rem, 2.4vw, 1rem);
+    box-shadow: var(--shadow-soft);
     cursor: pointer;
+    transition: transform .15s ease, box-shadow .15s ease;
 }
+
+#searchButton:hover {
+    box-shadow: 1px 3px 8px #cfcfcf;
+}
+
+#searchButton:active {
+    transform: scale(.96);
+}
+
+#searchButton:focus-visible {
+    outline: 2px solid #6571E0;
+    outline-offset: 2px;
+}
+
+#alert {
+    min-height: 1.2em;
+    max-width: var(--card-width);
+    font-size: clamp(0.82rem, 2.3vw, 1rem);
+    font-weight: 600;
+    color: #c0392b;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+/* sem mensagem: não reserva espaço */
+#alert:empty {
+    min-height: 0;
+}
+
+/* ---------------- Card do clima ---------------- */
 
 #weatherContainer {
     display: none;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 75vh;
-    width: 55vh;
-    border-radius: 20px;
-    box-shadow: 1px 2px 5px #dadada;
-    background-color: #f6f6f6;
-    gap: 10px;
+    gap: var(--gap);
+    width: var(--card-width);
+    padding: var(--pad);
+    border-radius: var(--radius);
+    background-color: var(--card-bg);
+    box-shadow: var(--shadow);
+}
+
+#weatherContainer.show {
+    display: flex;
+    animation: fadeIn .35s ease both;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
 }
 
 #locationHeader {
     text-align: center;
+    width: 100%;
 }
 
 #locationHeader h1 {
-    color: #272727;
-    font-size: 1.8rem;
+    margin: 0;
+    font-size: clamp(1.2rem, 4.4vw, 1.8rem);
+    line-height: 1.25;
+    color: var(--text);
+    overflow-wrap: anywhere;
 }
 
 #currentWeather {
-    color:#272727;
-    padding: 20px;
     display: grid;
-    grid-template-columns: 65% 35%;
-    align-items: center;
-    height: 20vh;
-    width: 45vh;
-    background-color: #ffffff;
-    border-radius: 20px;
-    box-shadow: 1px 2px 5px #dadada;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: clamp(8px, 1.6vw, 14px);
+    align-items: stretch;
+    width: 100%;
+    padding: clamp(10px, 1.6vh, 16px);
+    border-radius: var(--radius);
+    background-color: var(--surface);
+    box-shadow: var(--shadow);
+    color: var(--text);
 }
 
 #weatherIconContainer {
-    height: 20vh;
-    width: 90%;
-    background-color: #6571E0;
-    border-radius: 20px;
-    box-shadow: 1px 2px 5px #dadada;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    min-height: clamp(110px, 18vh, 160px);
+    padding: 8px;
+    border-radius: var(--radius);
+    background-color: #6571E0;
+    box-shadow: var(--shadow);
+}
+
+#weatherIcon {
+    width: clamp(64px, 15vw, 110px);
+    height: auto;
+    filter: drop-shadow(1px 2px 3px rgba(0, 0, 0, 0.5));
 }
 
 #temperatureDetails {
-    height: 20vh;
-    width: 90%;
-    background-color: #ffffff;
-    border-radius: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    padding: 8px;
+    border-radius: var(--radius);
+    background-color: var(--surface);
     text-align: center;
 }
 
 #temperatureDetails h1 {
-    font-size: 1.3rem;
+    margin: 0 0 6px;
+    font-size: clamp(0.95rem, 2.7vw, 1.3rem);
+    line-height: 1.25;
+    text-transform: capitalize;
+    overflow-wrap: anywhere;
 }
 
 #temperatureDetails h2 {
-    font-size: 1.2rem;
+    margin: 0;
+    font-size: clamp(1.1rem, 3.6vw, 1.6rem);
     font-weight: 600;
 }
 
+/* ---------------- Detalhes ---------------- */
+
 #weatherInfo {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.3rem;
-    justify-content: space-evenly;
-    align-items: center;
-    height: 25vh;
-    width: 85%;
-    margin-bottom: 5%;
-    border-radius: 20px;
-    padding: 5px;
-}
-
-#weatherIcon {
-    filter: drop-shadow(1px 2px 3px rgba(0,0,0,0.5));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(8px, 1.6vw, 16px);
+    width: 100%;
 }
 
 #weatherInfo > div {
-    background-color: #ffffff;
     display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
-    height: 10vh;
-    border-radius: 20px;
-    box-shadow: 1px 2px 5px #dadada;
+    gap: clamp(6px, 1.4vw, 12px);
+    min-height: clamp(56px, 9vh, 80px);
+    padding: 8px 10px;
+    border-radius: var(--radius);
+    background-color: var(--surface);
+    box-shadow: var(--shadow);
 }
 
 #weatherInfo h3 {
-    font-size: 1.3rem;
-    color: #000;
     margin: 0;
+    font-size: clamp(0.85rem, 2.5vw, 1.15rem);
+    color: #000;
+    white-space: nowrap;
 }
 
 #weatherInfo i {
-    font-size: 1.5rem;
+    flex: 0 0 auto;
+    font-size: clamp(1rem, 3.2vw, 1.45rem);
 }
 
 #maxTemp i {
@@ -172,6 +294,111 @@ body {
     color: transparent;
 }
 
-.show {
-    display: flex;
+/* ---------------- Ajustes finos ---------------- */
+
+/* Celulares estreitos: empilha ícone e temperatura */
+@media (max-width: 400px) {
+    #currentWeather {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    #weatherIconContainer {
+        min-height: clamp(96px, 15vh, 130px);
+    }
+
+    #weatherIcon {
+        width: clamp(60px, 22vw, 90px);
+    }
+
+    #weatherInfo > div {
+        flex-direction: column;
+        gap: 4px;
+        padding: 10px 6px;
+    }
+
+    #weatherInfo h3 {
+        font-size: clamp(0.8rem, 3.4vw, 1rem);
+    }
+}
+
+/* Telas baixas (notebooks pequenos / celular deitado) */
+@media (max-height: 680px) {
+    .container {
+        justify-content: flex-start;
+        gap: clamp(10px, 1.8vh, 18px);
+        padding-top: clamp(12px, 2vh, 20px);
+        padding-bottom: clamp(12px, 2vh, 20px);
+    }
+
+    #weatherIconContainer {
+        min-height: clamp(88px, 14vh, 120px);
+    }
+
+    #weatherInfo > div {
+        min-height: clamp(48px, 7vh, 64px);
+    }
+}
+
+/* Celular deitado: layout horizontal compacto */
+@media (max-height: 500px) and (orientation: landscape) {
+    .container {
+        gap: 8px;
+        padding: 8px 16px;
+    }
+
+    #searchForm {
+        padding: 6px 10px;
+    }
+
+    #weatherContainer {
+        gap: 8px;
+        padding: 10px 14px;
+    }
+
+    #locationHeader h1 {
+        font-size: clamp(0.95rem, 3vh, 1.15rem);
+    }
+
+    #currentWeather {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+        padding: 8px;
+    }
+
+    #weatherIconContainer {
+        min-height: 68px;
+    }
+
+    #weatherIcon {
+        width: 52px;
+    }
+
+    #weatherInfo {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    #weatherInfo > div {
+        flex-direction: column;
+        gap: 2px;
+        min-height: 46px;
+        padding: 4px;
+    }
+
+    #weatherInfo h3 {
+        font-size: 0.75rem;
+    }
+
+    #weatherInfo i {
+        font-size: 0.9rem;
+    }
+}
+
+/* Preferência por menos movimento */
+@media (prefers-reduced-motion: reduce) {
+    #weatherContainer.show {
+        animation: none;
+    }
+
+    #searchButton {
+        transition: none;
+    }
 }

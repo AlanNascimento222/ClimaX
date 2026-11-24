@@ -1,20 +1,27 @@
-document.querySelector('#searchForm').addEventListener('submit', async (event) =>{
-    
-    event.preventDefault();
+const searchForm = document.querySelector('#searchForm')
+const cityInput = document.querySelector('#city_name')
+const weatherContainer = document.querySelector('#weatherContainer')
 
+searchForm.addEventListener('submit', async (event) => {
+    event.preventDefault()
 
-    const cityName = document.querySelector('#city_name').value
+    const cityName = cityInput.value.trim()
+
+    if (!cityName) {
+        return showAlert('Digite uma cidade válida.')
+    }
+
     const apiKey = "a0a859dd4a6cd9867c30e36f44331540"
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURI(cityName)}&appid=${apiKey}&units=metric&lang=pt_br`
-    const results = await fetch(apiUrl);
-    const json = await results.json();
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(cityName)}&appid=${apiKey}&units=metric&lang=pt_br`
 
+    try {
+        const results = await fetch(apiUrl)
+        const json = await results.json()
 
+        if (json.cod != 200) {
+            return showAlert('Não foi possível concluir a ação.')
+        }
 
-    if (json.cod != 200){
-        showAlert(`Não foi possivel concluir a ação`)
-    } else {
-        console.log(json)
         showJsonInfos({
             city: json.name,
             country: json.sys.country,
@@ -26,29 +33,25 @@ document.querySelector('#searchForm').addEventListener('submit', async (event) =
             weatherIcon: json.weather[0].icon,
             description: json.weather[0].description
         })
+    } catch (error) {
+        showAlert('Falha na conexão. Tente novamente.')
     }
-
-    if(!cityName) {
-        return showAlert(`digite uma cidade válida.`)
-    }
-
 })
 
-
 function showAlert(msg) {
-    document.querySelector('#alert').innerHTML = msg
+    document.querySelector('#alert').textContent = msg
 }
 
 function showJsonInfos(json) {
     showAlert('')
-    document.querySelector('#weatherContainer').style.display = 'flex'
-    document.querySelector('#cityName').innerHTML = `${json.city}, ${json.country}`
-    document.querySelector('#currentTemp').innerHTML = `${json.temp.toFixed(0)}°C`
-    document.querySelector('#weatherDescription').innerHTML = `${json.description}`
-    document.querySelector('#maxTempDesc').innerHTML = `${json.tempMax.toFixed(0)}°C`
-    document.querySelector('#minTempDesc').innerHTML = `${json.tempMin.toFixed(0)}°C`
-    document.querySelector('#windSpeedDesc').innerHTML = `${json.windSpeed.toFixed(0)}km/h`
-    document.querySelector('#humidityDesc').innerHTML = `${json.humidity}%`
+    weatherContainer.classList.add('show')
+    document.querySelector('#cityName').textContent = `${json.city}, ${json.country}`
+    document.querySelector('#currentTemp').textContent = `${json.temp.toFixed(0)}°C`
+    document.querySelector('#weatherDescription').textContent = `${json.description}`
+    document.querySelector('#maxTempDesc').textContent = `${json.tempMax.toFixed(0)}°C`
+    document.querySelector('#minTempDesc').textContent = `${json.tempMin.toFixed(0)}°C`
+    document.querySelector('#windSpeedDesc').textContent = `${json.windSpeed.toFixed(0)}km/h`
+    document.querySelector('#humidityDesc').textContent = `${json.humidity}%`
     document.querySelector('#weatherIcon').setAttribute('src', `https://openweathermap.org/img/wn/${json.weatherIcon}@2x.png`)
 }
 

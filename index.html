@@ -19,20 +19,23 @@
   <!-- Favicon -->
   <link rel="shortcut icon" href="/image/iconTitle.png" type="image/x-icon">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#87fdff">
   <title>ClimaX</title>
 </head>
 
 <body>
   <div class="container">
     <form id="searchForm">
-      <i class="fa-solid fa-location-dot"></i>
-      <input type="search" name="city_name" id="city_name" placeholder="Pesquise uma cidade">
-      <button type="submit" id="searchButton">
-        <i class="fa-solid fa-magnifying-glass"></i>
+      <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+      <input type="search" name="city_name" id="city_name" placeholder="Pesquise uma cidade"
+        aria-label="Nome da cidade" autocomplete="off" enterkeyhint="search">
+      <button type="submit" id="searchButton" aria-label="Buscar clima">
+        <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
       </button>
     </form>
-    <div id="alert"></div>
+    <div id="alert" role="status" aria-live="polite"></div>
 
     <div id="weatherContainer">
       <div id="locationHeader">
@@ -41,7 +44,7 @@
 
       <div id="currentWeather">
         <div id="weatherIconContainer">
-          <img id="weatherIcon" src="">
+          <img id="weatherIcon" src="" alt="Ícone do clima">
         </div>
         <div id="temperatureDetails">
           <h1 id="weatherDescription">Ensolarado</h1>
