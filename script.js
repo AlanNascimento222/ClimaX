@@ -27,20 +27,41 @@ searchForm.addEventListener('submit', async (event) => {
             )
         }
 
+        const dailyRange = await getDailyRange(json.coord.lat, json.coord.lon)
+
         showJsonInfos({
             city: json.name,
             country: json.sys.country,
             temp: json.main.temp,
-            tempMax: json.main.temp_max,
-            tempMin: json.main.temp_min,
-            windSpeed: json.wind.speed,
+            tempMax: dailyRange ? dailyRange.max : json.main.temp_max,
+            tempMin: dailyRange ? dailyRange.min : json.main.temp_min,
+            windSpeed: json.wind.speed * 3.6, // a API devolve m/s; a tela mostra km/h
             humidity: json.main.humidity,
             weatherIcon: json.weather[0].icon,
             description: json.weather[0].description
         })
     } catch (error) {
         showAlert('Falha na conexão. Tente novamente.')
-    }})
+    }
+})
+
+// A API de clima atual devolve temp_min/temp_max como uma faixa de ~1°C do
+// momento da leitura, não os extremos do dia. Aqui pegamos o extremo real.
+async function getDailyRange(lat, lon) {
+    try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1`
+        const response = await fetch(url)
+        const data = await response.json()
+        const max = data.daily?.temperature_2m_max?.[0]
+        const min = data.daily?.temperature_2m_min?.[0]
+
+        if (typeof max !== 'number' || typeof min !== 'number') return null
+
+        return { max, min }
+    } catch (error) {
+        return null
+    }
+}
 
 function showAlert(msg) {
     alertBox.textContent = msg
